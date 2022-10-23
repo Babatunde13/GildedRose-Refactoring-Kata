@@ -13,25 +13,28 @@ public class TexttestFixture {
                 new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20),
                 new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
                 new Item("Backstage passes to a TAFKAL80ETC concert", 5, 49),
-                // this conjured item does not work properly yet
                 new Item("Conjured Mana Cake", 3, 6) };
 
         GildedRose app = new GildedRose(items);
 
-        int days = 2;
+        int days = 4;
         if (args.length > 0) {
             days = Integer.parseInt(args[0]) + 1;
         }
 
-        for (int i = 0; i < days; i++) {
+        System.out.println("-------- day " + 0 + " --------");
+        for (Item item : items) {
+            System.out.println(item);
+        }
+
+        for (int i = 1; i <= days; i++) {
             System.out.println("-------- day " + i + " --------");
+            app.updateQuality();
             System.out.println("name, sellIn, quality");
             for (Item item : items) {
                 System.out.println(item);
             }
             System.out.println();
-            app.updateQuality();
         }
     }
-
 }
