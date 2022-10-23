@@ -7,20 +7,7 @@ class GildedRose {
     private final int SULFURAS_MAX_QUALITY = 80;
 
     public GildedRose(Item[] items) {
-        for (Item item: items) {
-            this.limitItemQuality(item); // limit item quality to max or min if out of range
-        }
         this.items = items;
-    }
-
-    private void limitItemQuality(Item item) {
-        if (item.name.equals("Sulfuras, Hand of Ragnaros")){
-            item.quality = SULFURAS_MAX_QUALITY;
-        } else if (item.quality > this.MAX_QUALITY) {
-            item.quality = this.MAX_QUALITY;
-        } else if (item.quality < this.MIN_QUALITY) {
-            item.quality = this.MIN_QUALITY;
-        }
     }
 
     public Item[] getItems() {
@@ -29,11 +16,10 @@ class GildedRose {
 
     private void updateAgedBrieItemQuality(Item item) {
         if (item.quality < this.MAX_QUALITY) {
-            System.out.println(item.quality);
             if (item.sellIn >= 0) {
-                item.quality += 1;
+                item.quality = Math.min(item.quality + 1, this.MAX_QUALITY);
             } else {
-                item.quality += 2;
+                item.quality = Math.min(item.quality + 2, this.MAX_QUALITY);
             }
         }
     }
@@ -46,29 +32,29 @@ class GildedRose {
         if (item.sellIn < 0) {
             item.quality = 0;
         } else if(item.sellIn < 6) {
-            item.quality += 3;
+            item.quality = Math.min(item.quality + 3, this.MAX_QUALITY);
         } else if (item.sellIn < 11) {
-            item.quality += 2;
+            item.quality = Math.min(item.quality + 2, this.MAX_QUALITY);
         } else {
-            item.quality++;
+            item.quality = Math.min(item.quality + 1, this.MAX_QUALITY);
         }
     }
 
     private void updateConjureItem(Item item) {
         if (item.quality > 0) {
             if (item.sellIn >= 0) {
-                item.quality -= 2;
+                item.quality = Math.max(item.quality - 2, this.MIN_QUALITY);
             } else {
-                item.quality -= 4;
+                item.quality = Math.max(item.quality - 4, this.MIN_QUALITY);
             }
         }
     }
 
     private void updateDefaultItemQuality(Item item) {
         if (item.sellIn >= 0) {
-            item.quality -= 1;
+            item.quality = Math.max(item.quality - 1, this.MIN_QUALITY);
         } else {
-            item.quality -= 2;
+            item.quality = Math.max(item.quality - 2, this.MIN_QUALITY);
         }
     }
 
@@ -78,13 +64,18 @@ class GildedRose {
         }
     }
 
+    private boolean isItemQualityInRange(Item item) {
+        return item.quality > this.MIN_QUALITY && item.quality < this.MAX_QUALITY;
+    }
+
     private void updateItemQuality(Item item) {
         if (item.name.equals("Sulfuras, Hand of Ragnaros")) {
             // "Sulfuras", being a legendary item, never has to be sold or decreases in Quality
+            item.quality = this.SULFURAS_MAX_QUALITY;
             return;
         }
 
-        if (item.quality > this.MIN_QUALITY && item.quality < this.MAX_QUALITY) {
+        if (this.isItemQualityInRange(item)) {
             if (item.name.equals("Aged Brie")) {
                 this.updateAgedBrieItemQuality(item);
             } else if (item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
