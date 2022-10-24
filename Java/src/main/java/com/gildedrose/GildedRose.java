@@ -65,7 +65,7 @@ class GildedRose {
     }
 
     private boolean isItemQualityInRange(Item item) {
-        return item.quality > this.MIN_QUALITY && item.quality < this.MAX_QUALITY;
+        return item.quality >= this.MIN_QUALITY && item.quality <= this.MAX_QUALITY;
     }
 
     private void updateItemQuality(Item item) {
